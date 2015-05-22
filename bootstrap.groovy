@@ -50,8 +50,13 @@ job(compileJobName) {
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
-    steps {
-        maven('compileJobName')
+    /* An ugly XML hacking here*/
+    configure { project ->
+        project / builders / 'org.jfrog.hudson.maven3.Maven3Builder' {
+            mavenName('Maven3')
+            rootPom('pom.xml')
+            goals('compile')
+        }
     }
 }
 
