@@ -16,17 +16,17 @@ jenkins.model.Jenkins.theInstance.getViews().each {
 }
 
 
-def checkoutJob = "Imaginarium-master-01-checkout"
-def compile = "Imaginarium-master-02-compile"
-def build = "Imaginarium-master-03-build"
-def sonar = "Imaginarium-master-04-sonar"
+def checkoutJobName = "Imaginarium-master-01-checkout"
+def compileJobName = "Imaginarium-master-02-compileJobName"
+def buildJobName = "Imaginarium-master-03-buildJobName"
+def sonarJobName = "Imaginarium-master-04-sonarJobName"
 // 01 - checkout
-job(checkoutJob) {
+job(checkoutJobName) {
     description 'Getting the source code for further processing'
     deliveryPipelineConfiguration("Build", "clone")
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream "Imaginarium-master-02-compile", 'SUCCESS'
+        downstream "Imaginarium-master-02-compileJobName", 'SUCCESS'
     }
     scm {
         git {
@@ -39,32 +39,32 @@ job(checkoutJob) {
     }
 }
 
-// 02 - quick compile
-job(compile) {
-    description 'Quick compile for health check'
-    deliveryPipelineConfiguration("Build", "compile")
+// 02 - quick compileJobName
+job(compileJobName) {
+    description 'Quick compileJobName for health check'
+    deliveryPipelineConfiguration("Build", "compileJobName")
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream build, 'SUCCESS'
+        downstream buildJobName, 'SUCCESS'
     }
     scm {
-        cloneWorkspace checkoutJob, 'Any'
+        cloneWorkspace checkoutJobName, 'Any'
     }
     steps {
-        maven('compile')
+        maven('compileJobName')
     }
 }
 
-// 03 - build
-job(compile) {
-    description 'Full build to generate artifact'
-    deliveryPipelineConfiguration("Build", "build")
+// 03 - buildJobName
+job(buildJobName) {
+    description 'Full buildJobName to generate artifact'
+    deliveryPipelineConfiguration("Package", "buildJobName")
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream sonar, 'SUCCESS'
+        downstream sonarJobName, 'SUCCESS'
     }
     scm {
-        cloneWorkspace checkoutJob, 'Any'
+        cloneWorkspace checkoutJobName, 'Any'
     }
     steps {
         maven('package')
