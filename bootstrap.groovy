@@ -1,3 +1,5 @@
+//import javaposse.jobdsl.dsl.jobs.FreeStyleJob
+
 // purge jobs
 jenkins.model.Jenkins.theInstance.getProjects().each { job ->
     if (!job.name.contains('bootstrap') && !job.name.contains('Jenkins')) {
@@ -13,10 +15,10 @@ jenkins.model.Jenkins.theInstance.getViews().each {
         }
 }
 
+
 // 01 - checkout
 job("Imaginarium-master-01-checkout") {
     description 'Getting the source code for further processing'
-    label project.build_agent_label
     deliveryPipelineConfiguration("Build", "clone")
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
@@ -30,7 +32,5 @@ job("Imaginarium-master-01-checkout") {
             branch 'master'
             shallowClone true
         }
-    }
-    triggers {
     }
 }
