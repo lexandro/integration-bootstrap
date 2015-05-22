@@ -16,8 +16,12 @@ jenkins.model.Jenkins.theInstance.getViews().each {
 }
 
 
+def checkoutJob = "Imaginarium-master-01-checkout"
+def compile = "Imaginarium-master-02-compile"
+def build = "Imaginarium-master-03-build"
+def sonar = "Imaginarium-master-04-sonar"
 // 01 - checkout
-job("Imaginarium-master-01-checkout") {
+job(checkoutJob) {
     description 'Getting the source code for further processing'
     deliveryPipelineConfiguration("Build", "clone")
     publishers {
@@ -32,5 +36,37 @@ job("Imaginarium-master-01-checkout") {
             branch 'master'
             shallowClone true
         }
+    }
+}
+
+// 02 - quick compile
+job(compile) {
+    description 'Quick compile for health check'
+    deliveryPipelineConfiguration("Build", "compile")
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream build, 'SUCCESS'
+    }
+    scm {
+        cloneWorkspace checkoutJob, 'Any'
+    }
+    steps {
+        maven('compile')
+    }
+}
+
+// 03 - build
+job(compile) {
+    description 'Full build to generate artifact'
+    deliveryPipelineConfiguration("Build", "build")
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream sonar, 'SUCCESS'
+    }
+    scm {
+        cloneWorkspace checkoutJob, 'Any'
+    }
+    steps {
+        maven('package')
     }
 }
