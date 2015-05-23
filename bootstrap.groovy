@@ -101,7 +101,7 @@ job(dockerImageJobName) {
             dockerFileDirectory '.'
             repoName 'lexandro/' + projectName.toLowerCase()
             noCache false
-            forcePull true
+            forcePull false
             dockerfilePath '.'
             skipBuild false
             skipDecorate true
