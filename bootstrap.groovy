@@ -131,7 +131,7 @@ listView(jobNamePrefix + ' jobs') {
 
 deliveryPipelineView(jobNamePrefix + ' pipeline') {
     pipelines {
-        component(viewName, checkoutJobName)
+        component(jobNamePrefix + ' pipeline', checkoutJobName)
     }
 }
 
