@@ -35,12 +35,6 @@ def deployJobName = sprintf("%s-%02d-deploy", jobNamePrefix, stepCount)
 job(checkoutJobName) {
     description 'Getting the source code for further processing'
     deliveryPipelineConfiguration("Start", "clone")
-    /* setup github plugin */
-//    configure { project ->
-//        project / properties / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
-//            projectUrl scmUrl
-//        }
-//    }
     scm {
         git {
             remote {
@@ -51,6 +45,15 @@ job(checkoutJobName) {
             shallowClone true
         }
     }
+
+    /* setup github plugin */
+
+    configure { project ->
+        project / properties / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
+            projectUrl projectScmUrl
+        }
+    }
+
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
         downstream compileJobName, 'SUCCESS'
