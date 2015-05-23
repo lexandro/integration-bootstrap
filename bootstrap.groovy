@@ -43,7 +43,7 @@ job(checkoutJobName) {
 // 02 - quick compileJobName
 job(compileJobName) {
     description 'Quick compileJobName for health check'
-    deliveryPipelineConfiguration("Build", "compileJobName")
+    deliveryPipelineConfiguration("Build", "compile")
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
         downstream buildJobName, 'SUCCESS'
@@ -64,7 +64,7 @@ job(compileJobName) {
 // 03 - buildJobName
 job(buildJobName) {
     description 'Full buildJobName to generate artifact'
-    deliveryPipelineConfiguration("Package", "buildJobName")
+    deliveryPipelineConfiguration("Package", "build")
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
         downstream sonarJobName, 'SUCCESS'
@@ -78,10 +78,26 @@ job(buildJobName) {
     }
 }
 
+// 04 - sonar
+job(deployJobName) {
+    description 'Quality check'
+    deliveryPipelineConfiguration("QA", "sonar")
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream sonarJobName, 'SUCCESS'
+    }
+    scm {
+        cloneWorkspace checkoutJobName, 'Any'
+    }
+    steps {
+        maven('version')
+    }
+}
+
 // 04 - deploy
 job(deployJobName) {
     description 'Deploy app to the demo server'
-    deliveryPipelineConfiguration("Package", "buildJobName")
+    deliveryPipelineConfiguration("Rollout", "deploy")
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
         downstream sonarJobName, 'SUCCESS'
