@@ -46,13 +46,13 @@ job(checkoutJobName) {
         }
     }
 
-    /* setup github plugin */
-
-    configure { project ->
-        project / properties / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
-            projectUrl projectScmUrl + '/'
-        }
-    }
+//    /* setup github plugin */
+//
+//    configure { project ->
+//        project / properties / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
+//            projectUrl projectScmUrl + '/'
+//        }
+//    }
 
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
