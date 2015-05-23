@@ -169,12 +169,12 @@ listView(jobNamePrefix + ' jobs') {
         buildButton()
     }
 }
-
-deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
-    pipelines {
-        component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
-    }
-}
+//
+//deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
+//    pipelines {
+//        component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
+//    }
+//}
 buildPipelineView(jobNamePrefix + ' build pipeline') {
     title ' build pipeline'
     displayedBuilds 10
