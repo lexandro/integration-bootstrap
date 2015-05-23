@@ -33,7 +33,7 @@ def deployJobName = sprintf("%s-%02d-deploy", jobNamePrefix, stepCount)
 // 01 - checkout
 job(checkoutJobName) {
     description 'Getting the source code for further processing'
-    deliveryPipelineConfiguration("Build", "clone")
+    deliveryPipelineConfiguration("Start", "clone")
     scm {
         git {
             remote {
@@ -73,7 +73,7 @@ job(compileJobName) {
 // 03 - buildJobName
 job(buildJobName) {
     description 'Full buildJobName to generate artifact'
-    deliveryPipelineConfiguration("Package", "build")
+    deliveryPipelineConfiguration("Build", "build")
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
