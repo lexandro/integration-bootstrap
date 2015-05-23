@@ -113,7 +113,6 @@ job(dockerImageJobName) {
             dockerfilePath '.'
             skipBuild false
             skipDecorate true
-            repoTag latest
             skipTagLatest false
 
         }
