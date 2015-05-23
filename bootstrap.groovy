@@ -17,15 +17,16 @@ jenkins.model.Jenkins.theInstance.getViews().each {
 
 def projectName = 'Imaginarium'
 def branchName = 'master'
-def stepCount = 1;
+def stepCount = 0;
 
 def jobNamePrefix = sprintf('%s-%s', projectName, branchName)
 
-def checkoutJobName = sprintf("%s-%02d-checkout", jobNamePrefix, stepCount++)
-def compileJobName = sprintf("%s-%02d-compile", jobNamePrefix, stepCount++)
-def buildJobName = sprintf("%s-%02d-build", jobNamePrefix, stepCount++)
-def deployJobName = sprintf("%s-%02d-deploy", jobNamePrefix, stepCount++)
-def sonarJobName = sprintf("%s-%02d-sonar", jobNamePrefix, stepCount++)
+def checkoutJobName = sprintf("%s-%02d-checkout", jobNamePrefix, ++stepCount)
+def compileJobName = sprintf("%s-%02d-compile", jobNamePrefix, ++stepCount)
+def buildJobName = sprintf("%s-%02d-build", jobNamePrefix, ++stepCount)
+
+def dockerImageJobName = sprintf("%s-%02d-docker-image", jobNamePrefix, ++stepCount)
+def sonarJobName = sprintf("%s-%02d-sonar", jobNamePrefix, stepCount)
 
 // 01 - checkout
 job(checkoutJobName) {
@@ -53,7 +54,7 @@ job(compileJobName) {
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
-    /* An ugly XML hacking here*/
+    /* An ugly XML hacking here, but it calls the latest maven plugin*/
     configure { project ->
         project / builders / 'org.jfrog.hudson.maven3.Maven3Builder' {
             mavenName('Maven3')
@@ -79,14 +80,43 @@ job(buildJobName) {
     }
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream deployJobName, 'SUCCESS'
+        downstream dockerImageJobName, 'SUCCESS'
     }
 }
 
-// 04 - deploy
-job(deployJobName) {
-    description 'Deploy app to the demo server'
-    deliveryPipelineConfiguration("Rollout", "deploy")
+// 04 - docker
+job(dockerImageJobName) {
+    description 'Create and publish docker image'
+    deliveryPipelineConfiguration("Rollout", "dockerize")
+    scm {
+        cloneWorkspace checkoutJobName, 'Any'
+    }
+    /*
+    * configuring cloudbee docker plugin via configure block
+    */
+    configure { project ->
+        project / builders / 'com.cloudbees.dockerpublish.DockerBuilder ' {
+            dockerFileDirectory '.'
+            repoName 'lexandro/' + projectName.toLowerCase()
+            noCache false
+            forcePull true
+            dockerfilePath '.'
+            skipBuild false
+            skipDecorate true
+            repoTag latest
+            skipTagLatest false
+
+        }
+    }
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+    }
+}
+
+// 04 - sonar
+job(sonarJobName) {
+    description 'Quality check'
+    deliveryPipelineConfiguration("QA", "sonar")
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
@@ -95,14 +125,13 @@ job(deployJobName) {
     }
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream sonarJobName, 'SUCCESS'
     }
 }
 
-// 05 - sonar
-job(sonarJobName) {
-    description 'Quality check'
-    deliveryPipelineConfiguration("QA", "sonar")
+// 06 - deploy
+job(deployJobName) {
+    description 'Deploy app image to the demo server'
+    deliveryPipelineConfiguration("Rollout", "deploy")
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
