@@ -175,7 +175,9 @@ deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
         component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
     }
 }
-buildPipelineView(jobNamePrefix + ' build pipeline') {
-    title jobNamePrefix + ' build pipeline'
+buildPipelineView(' build pipeline') {
+    title ' build pipeline'
+    displayedBuilds 10
+    alwaysAllowManualTrigger()
     selectedJob checkoutJobName
 }
