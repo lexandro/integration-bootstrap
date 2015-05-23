@@ -16,7 +16,7 @@ jenkins.model.Jenkins.theInstance.getViews().each {
 }
 
 def projectName = 'Imaginarium'
-def projectScmUrl = 'git@github.com:lexandro/integration.git/'
+def projectScmUrl = 'git@github.com:lexandro/integration.git'
 def branchName = 'master'
 def stepCount = 0;
 //
@@ -50,7 +50,7 @@ job(checkoutJobName) {
 
     configure { project ->
         project / properties / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
-            projectUrl projectScmUrl
+            projectUrl projectScmUrl + '/'
         }
     }
 
