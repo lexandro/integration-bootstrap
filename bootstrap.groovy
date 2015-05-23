@@ -18,18 +18,17 @@ jenkins.model.Jenkins.theInstance.getViews().each {
 def projectName = 'Imaginarium'
 def branchName = 'master'
 def stepCount = 0;
-
+//
 def jobNamePrefix = sprintf('%s-%s', projectName, branchName)
-
+//
 def checkoutJobName = sprintf("%s-%02d-checkout", jobNamePrefix, ++stepCount)
 def compileJobName = sprintf("%s-%02d-compile", jobNamePrefix, ++stepCount)
 def buildJobName = sprintf("%s-%02d-build", jobNamePrefix, ++stepCount)
-
-
+//
 def dockerImageJobName = sprintf("%s-%02d-docker-image", jobNamePrefix, ++stepCount)
-def sonarJobName = sprintf("%s-%02d-sonar", jobNamePrefix, stepCount)
-
-def deployJobName = sprintf("%s-%02d-deploy", jobNamePrefix, ++stepCount)
+//
+def sonarJobName = sprintf("%s-%02d-sonar", jobNamePrefix, ++stepCount)
+def deployJobName = sprintf("%s-%02d-deploy", jobNamePrefix, sstepCount)
 
 // 01 - checkout
 job(checkoutJobName) {
@@ -92,7 +91,7 @@ job(dockerImageJobName) {
     description 'Create and publish docker image'
     deliveryPipelineConfiguration("Rollout", "dockerize")
     scm {
-        cloneWorkspace checkoutJobName, 'Any'
+        cloneWorkspace buildJobName, 'Any'
     }
     /*
     * configuring cloudbee docker plugin via configure block
