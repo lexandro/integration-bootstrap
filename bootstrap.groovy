@@ -45,14 +45,10 @@ job(checkoutJobName) {
             shallowClone true
         }
     }
-
-//    /* setup github plugin */
-//
-//    configure { project ->
-//        project / properties / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
-//            projectUrl projectScmUrl + '/'
-//        }
-//    }
+    // activate job for github pushes
+    configure { project ->
+        project / triggers / 'com.cloudbees.jenkins.GitHubPushTrigger' / spec
+    }
 
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
