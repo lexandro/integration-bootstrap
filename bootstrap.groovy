@@ -97,7 +97,7 @@ job(buildJobName) {
 // 04 - docker
 job(dockerImageJobName) {
     description 'Create and publish docker image'
-    deliveryPipelineConfiguration("Docker", "pull image")
+    deliveryPipelineConfiguration("Docker", "push image")
     scm {
         cloneWorkspace buildJobName, 'Any'
     }
