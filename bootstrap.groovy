@@ -18,8 +18,9 @@ jenkins.model.Jenkins.theInstance.getViews().each {
 
 def checkoutJobName = "Imaginarium-master-01-checkout"
 def compileJobName = "Imaginarium-master-02-compileJobName"
-def buildJobName = "Imaginarium-master-03-buildJobName"
-def sonarJobName = "Imaginarium-master-04-sonarJobName"
+def buildJobName = "Imaginarium-master-03-build"
+def sonarJobName = "Imaginarium-master-04-sonar"
+def deployJobName = "Imaginarium-master-04-deploy"
 // 01 - checkout
 job(checkoutJobName) {
     description 'Getting the source code for further processing'
@@ -67,6 +68,7 @@ job(buildJobName) {
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
         downstream sonarJobName, 'SUCCESS'
+        downstream deployJobName, 'SUCCESS'
     }
     scm {
         cloneWorkspace checkoutJobName, 'Any'
@@ -77,7 +79,7 @@ job(buildJobName) {
 }
 
 // 04 - deploy
-job(buildJobName) {
+job(deployJobName) {
     description 'Deploy app to the demo server'
     deliveryPipelineConfiguration("Package", "buildJobName")
     publishers {
