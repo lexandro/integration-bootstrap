@@ -72,6 +72,22 @@ job(buildJobName) {
         cloneWorkspace checkoutJobName, 'Any'
     }
     steps {
-        maven('package')
+        maven('package -DskipTests')
+    }
+}
+
+// 04 - deploy
+job(buildJobName) {
+    description 'Deploy app to the demo server'
+    deliveryPipelineConfiguration("Package", "buildJobName")
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream sonarJobName, 'SUCCESS'
+    }
+    scm {
+        cloneWorkspace checkoutJobName, 'Any'
+    }
+    steps {
+        maven('version')
     }
 }
