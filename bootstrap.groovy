@@ -31,10 +31,6 @@ def sonarJobName = sprintf("%s-%02d-sonar", jobNamePrefix, stepCount++)
 job(checkoutJobName) {
     description 'Getting the source code for further processing'
     deliveryPipelineConfiguration("Build", "clone")
-    publishers {
-        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream "Imaginarium-master-02-compileJobName", 'SUCCESS'
-    }
     scm {
         git {
             remote {
@@ -44,16 +40,16 @@ job(checkoutJobName) {
             shallowClone true
         }
     }
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream compileJobName, 'SUCCESS'
+    }
 }
 
 // 02 - quick compileJobName
 job(compileJobName) {
     description 'Quick compileJobName for health check'
     deliveryPipelineConfiguration("Build", "compile")
-    publishers {
-        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream buildJobName, 'SUCCESS'
-    }
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
@@ -65,21 +61,25 @@ job(compileJobName) {
             goals('compile')
         }
     }
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream buildJobName, 'SUCCESS'
+    }
 }
 
 // 03 - buildJobName
 job(buildJobName) {
     description 'Full buildJobName to generate artifact'
     deliveryPipelineConfiguration("Package", "build")
-    publishers {
-        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream deployJobName, 'SUCCESS'
-    }
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
     steps {
         maven('package -DskipTests')
+    }
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream deployJobName, 'SUCCESS'
     }
 }
 
@@ -87,15 +87,15 @@ job(buildJobName) {
 job(deployJobName) {
     description 'Deploy app to the demo server'
     deliveryPipelineConfiguration("Rollout", "deploy")
-    publishers {
-        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream sonarJobName, 'SUCCESS'
-    }
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
     steps {
         maven('-version')
+    }
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream sonarJobName, 'SUCCESS'
     }
 }
 
@@ -103,15 +103,14 @@ job(deployJobName) {
 job(sonarJobName) {
     description 'Quality check'
     deliveryPipelineConfiguration("QA", "sonar")
-    publishers {
-        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
-        downstream sonarJobName, 'SUCCESS'
-    }
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
     steps {
         maven('-version')
+    }
+    publishers {
+        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
     }
 }
 
