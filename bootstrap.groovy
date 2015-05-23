@@ -181,10 +181,7 @@ deliveryPipelineView(jobNamePrefix + ' pipeline') {
         component(jobNamePrefix + ' pipeline', checkoutJobName)
     }
 }
-
-deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
-    pipelines {
-        component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
-    }
+buildPipelineView('Build pipeline') {
+    title jobNamePrefix + ' build pipeline'
+    selectedJob checkoutJobName
 }
-
