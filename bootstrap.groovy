@@ -25,8 +25,11 @@ def checkoutJobName = sprintf("%s-%02d-checkout", jobNamePrefix, ++stepCount)
 def compileJobName = sprintf("%s-%02d-compile", jobNamePrefix, ++stepCount)
 def buildJobName = sprintf("%s-%02d-build", jobNamePrefix, ++stepCount)
 
+
 def dockerImageJobName = sprintf("%s-%02d-docker-image", jobNamePrefix, ++stepCount)
 def sonarJobName = sprintf("%s-%02d-sonar", jobNamePrefix, stepCount)
+
+def deployJobName = sprintf("%s-%02d-deploy", jobNamePrefix, ++stepCount)
 
 // 01 - checkout
 job(checkoutJobName) {
