@@ -176,3 +176,15 @@ deliveryPipelineView(jobNamePrefix + ' pipeline') {
     }
 }
 
+deliveryPipelineView(jobNamePrefix + ' pipeline') {
+    pipelines {
+        component(jobNamePrefix + ' pipeline', checkoutJobName)
+    }
+}
+
+deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
+    pipelines {
+        component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
+    }
+}
+
