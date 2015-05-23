@@ -97,7 +97,7 @@ job(dockerImageJobName) {
     * configuring cloudbee docker plugin via configure block
     */
     configure { project ->
-        project / builders / 'com.cloudbees.dockerpublish.DockerBuilder ' {
+        project / builders / 'com.cloudbees.dockerpublish.DockerBuilder' {
             dockerFileDirectory '.'
             repoName 'lexandro/' + projectName.toLowerCase()
             noCache false
@@ -111,7 +111,6 @@ job(dockerImageJobName) {
         }
     }
     publishers {
-        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
         downstream sonarJobName, 'SUCCESS'
         downstream deployJobName, 'SUCCESS'
     }
@@ -136,14 +135,17 @@ job(sonarJobName) {
 job(deployJobName) {
     description 'Deploy app image to the demo server'
     deliveryPipelineConfiguration("Rollout", "deploy")
-    scm {
-        cloneWorkspace checkoutJobName, 'Any'
-    }
-    steps {
-        maven('-version')
-    }
-    publishers {
-        publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+    /*
+     * configuring cloudbee docker plugin via configure block
+     */
+    configure { project ->
+        project / buildWrappers / 'org.jvnet.hudson.plugins.SSHBuildWrapper' {
+            siteName 'lexandro@imaginarium.lexandro.com:22'
+            postScript """
+docker pull lexandro/imaginarium
+docker run -dt lexandro/imaginarium java -Djava.security.egd=file:/dev/urandom -jar imaginarium.jar
+"""
+        }
     }
 }
 
