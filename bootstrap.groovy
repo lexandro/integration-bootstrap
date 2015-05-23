@@ -149,6 +149,7 @@ job(deployJobName) {
         project / buildWrappers / 'org.jvnet.hudson.plugins.SSHBuildWrapper' {
             siteName 'lexandro@imaginarium.lexandro.com:22'
             postScript """
+echo $MONGO_URI
 docker stop imaginarium
 docker rm imaginarium
 docker pull lexandro/imaginarium
