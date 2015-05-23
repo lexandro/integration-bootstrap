@@ -16,7 +16,7 @@ jenkins.model.Jenkins.theInstance.getViews().each {
 }
 
 def projectName = 'Imaginarium'
-def scmUrl = 'git@github.com:lexandro/integration.git/'
+def projectScmUrl = 'git@github.com:lexandro/integration.git/'
 def branchName = 'master'
 def stepCount = 0;
 //
@@ -36,15 +36,15 @@ job(checkoutJobName) {
     description 'Getting the source code for further processing'
     deliveryPipelineConfiguration("Start", "clone")
     /* setup github plugin */
-    configure { project ->
-        project / properties / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
-            projectUrl scmUrl
-        }
-    }
+//    configure { project ->
+//        project / properties / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
+//            projectUrl scmUrl
+//        }
+//    }
     scm {
         git {
             remote {
-                url scmUrl
+                url projectScmUrl
                 credentials 'git'
             }
             branch 'master'
