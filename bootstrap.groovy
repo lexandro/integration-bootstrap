@@ -79,7 +79,7 @@ job(buildJobName) {
 }
 
 // 04 - sonar
-job(deployJobName) {
+job(sonarJobName) {
     description 'Quality check'
     deliveryPipelineConfiguration("QA", "sonar")
     publishers {
