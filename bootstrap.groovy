@@ -113,6 +113,8 @@ job(dockerImageJobName) {
     }
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream sonarJobName, 'SUCCESS'
+        downstream deployJobName, 'SUCCESS'
     }
 }
 
