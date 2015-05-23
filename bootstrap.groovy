@@ -176,12 +176,12 @@ deliveryPipelineView(jobNamePrefix + ' pipeline') {
     }
 }
 
-deliveryPipelineView(jobNamePrefix + ' pipeline') {
+deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
     pipelines {
-        component(jobNamePrefix + ' pipeline', checkoutJobName)
+        component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
     }
 }
-buildPipelineView('Build pipeline') {
+buildPipelineView(jobNamePrefix + ' build pipeline') {
     title jobNamePrefix + ' build pipeline'
     selectedJob checkoutJobName
 }
