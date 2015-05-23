@@ -116,7 +116,6 @@ job(sonarJobName) {
 }
 
 listView(jobNamePrefix + ' jobs') {
-    description viewDescription
     jobs {
         regex(jobNamePrefix + '(.*?)')
     }
