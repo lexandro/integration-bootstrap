@@ -149,8 +149,10 @@ job(deployJobName) {
         project / buildWrappers / 'org.jvnet.hudson.plugins.SSHBuildWrapper' {
             siteName 'lexandro@imaginarium.lexandro.com:22'
             postScript """
+docker stop imaginarium
+docker rm imaginarium
 docker pull lexandro/imaginarium
-docker run -dt lexandro/imaginarium java -Djava.security.egd=file:/dev/urandom -jar imaginarium.jar
+docker run -dt --name 'imaginarium' -p 80:8080 lexandro/imaginarium java -Djava.security.egd=file:/dev/urandom -jar imaginarium.jar
 """
         }
     }
