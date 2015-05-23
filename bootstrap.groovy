@@ -15,6 +15,7 @@ jenkins.model.Jenkins.theInstance.getViews().each {
         }
 }
 
+
 def projectName = 'Imaginarium'
 def projectScmUrl = 'git@github.com:lexandro/integration.git'
 def branchName = 'master'
@@ -59,7 +60,7 @@ job(checkoutJobName) {
 // 02 - quick compileJobName
 job(compileJobName) {
     description 'Quick compileJobName for health check'
-    deliveryPipelineConfiguration("Build", "compile")
+    deliveryPipelineConfiguration("Build", "health check")
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
@@ -80,7 +81,7 @@ job(compileJobName) {
 // 03 - buildJobName
 job(buildJobName) {
     description 'Full buildJobName to generate artifact'
-    deliveryPipelineConfiguration("Build", "build")
+    deliveryPipelineConfiguration("Package", "build")
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
@@ -96,7 +97,7 @@ job(buildJobName) {
 // 04 - docker
 job(dockerImageJobName) {
     description 'Create and publish docker image'
-    deliveryPipelineConfiguration("Package", "dockerize")
+    deliveryPipelineConfiguration("Docker", "pull image")
     scm {
         cloneWorkspace buildJobName, 'Any'
     }
@@ -119,14 +120,13 @@ job(dockerImageJobName) {
     }
     publishers {
         downstream sonarJobName, 'SUCCESS'
-        downstream deployJobName, 'SUCCESS'
     }
 }
 
 // 05 - sonar
 job(sonarJobName) {
     description 'Quality check'
-    deliveryPipelineConfiguration("QA", "sonar")
+    deliveryPipelineConfiguration("Code Quality", "sonar")
     scm {
         cloneWorkspace checkoutJobName, 'Any'
     }
@@ -135,13 +135,14 @@ job(sonarJobName) {
     }
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
+        downstream deployJobName, 'SUCCESS'
     }
 }
 
 // 06 - deploy
 job(deployJobName) {
     description 'Deploy app image to the demo server'
-    deliveryPipelineConfiguration("Rollout", "deploy")
+    deliveryPipelineConfiguration("Rollout", "deploy image")
     /*
      * configuring cloudbee docker plugin via configure block
      */
@@ -169,15 +170,12 @@ listView(jobNamePrefix + ' jobs') {
         buildButton()
     }
 }
-//
-//deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
-//    pipelines {
-//        component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
-//    }
-//}
-buildPipelineView(jobNamePrefix + ' build pipeline') {
-    title ' build pipeline'
-    displayedBuilds 10
-    alwaysAllowManualTrigger()
-    selectedJob checkoutJobName
+
+deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
+    showAggregatedPipeline true
+    enableManualTriggers true
+    pipelines {
+        component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
+    }
 }
+
