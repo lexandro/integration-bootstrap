@@ -143,7 +143,7 @@ job(deployJobName) {
     description 'Deploy app image to the demo server'
     deliveryPipelineConfiguration("Rollout", "deploy image")
     /*
-     * configuring cloudbee docker plugin via configure block
+     * configuring ssh plugin to run docker commands
      */
     configure { project ->
         project / buildWrappers / 'org.jvnet.hudson.plugins.SSHBuildWrapper' {
