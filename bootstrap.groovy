@@ -86,7 +86,7 @@ job(buildJobName) {
         cloneWorkspace checkoutJobName, 'Any'
     }
     steps {
-        maven('package -DskipTests')
+        maven('package')
     }
     publishers {
         publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
