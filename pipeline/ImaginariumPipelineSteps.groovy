@@ -1,6 +1,10 @@
 package pipeline
 
 import steps.*
+import steps.PipelineStep
+import project.Project
+import environment.Environment
+import component.Component
 
 class ImaginariumPipelineSteps extends PipelineSteps {
 
@@ -11,18 +15,19 @@ class ImaginariumPipelineSteps extends PipelineSteps {
 
     def createStepTree() {
         // initializing the step instances
-
-        def checkout = CheckoutStep.newInstance(project, component);
-        def compile = CompileStep.newInstance(project, component);
-        def deploy = DeployStep.newInstance(project, component);
-        def sonar = SonarStep.newInstance(project, component);
-        def createDockerImage = DockerImageStep.newInstance(project, component);
-
-        // linking together the step tree;
+        def checkout = CheckoutStep.newInstance(project, environment, component);
+        def compile = CompileStep.newInstance(project, environment, component);
+        def deploy = DeployStep.newInstance(project, environment, component);
+        def dockerImage = DockerImageStep.newInstance(project, environment, component);
+        def sonar = SonarStep.newInstance(project, environment, component);
+        def release = ReleaseStep.newInstance(project, environment, component);
+//
+        // building the step tree;
         checkout.nextSteps.add(compile);
         compile.nextSteps.add(deploy);
+        deploy.nextSteps.add(dockerImage);
         deploy.nextSteps.add(sonar);
-        deploy.nextSteps.add(createDockerImage);
+        dockerImage.nextSteps.add(release);
         //
         firstStep = checkout;
 

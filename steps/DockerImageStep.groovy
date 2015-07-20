@@ -1,21 +1,22 @@
 package steps
 
-import component.Component
 import project.Project
+import environment.Environment
+import component.Component
 
 class DockerImageStep extends PipelineStep {
 
-    private DockerImageStep(Project project, Component component) {
-        super(project, component);
-        name = 'createdockerimage';
+    private DockerImageStep(Project project, Environment environment, Component component) {
+        super(project, environment, component);
+        name = 'create-docker-image';
     }
 
-    def newInstance(Project project, Component component) {
-        return new DockerImageStep();
+    def newInstance(Project project, Environment environment, Component component) {
+        return new DockerImageStep(project, environment, component);
     }
 
     def getJobName() {
-        return sprintf('%s-%s-04-create_docker_image', project.prefix, component.name);
+        return sprintf('%s-%s-%s-04-create_docker_image', project.namePrefix, component.name, environment.namePrefix);
     }
 
     def createJob(PipelineStep parentStep) {
@@ -23,33 +24,31 @@ class DockerImageStep extends PipelineStep {
 
         dslFactory.job(jobName) {
             description 'Create docker image'
-            abel project.docker_client_agent_label
-            deliveryPipelineConfiguration("Build", "docker_image")
+            deliveryPipelineConfiguration("Docker", "push image")
             publishers {
                 publishCloneWorkspace '**', '', 'Any', 'TAR', true, null
                 for (PipelineStep nextStep : nextSteps) {
                     downstream nextStep.getJobName(), 'SUCCESS'
                 }
-//                mailer(ProjectData.notification_email, true, false)
             }
-
+            /*
+            configuring CloudBees docker plugin via configure block
+           */
             configure { project ->
-                project / builders / 'com.nirima.jenkins.plugins.docker.builder.DockerBuilderPublisher' {
+                project / builders / 'com.cloudbees.dockerpublish.DockerBuilder' {
                     dockerFileDirectory '.'
-                    tag project.docker_image_prefix + component.dockerImageName
-                    pushOnSuccess true
-                    cleanImages false
-                    cleanupWithJenkinsJobDelete false
+                    repoName 'lexandro/' + component.name
+                    noCache false
+                    forcePull false
+                    dockerfilePath '.'
+                    skipBuild false
+                    skipDecorate true
+                    skipTagLatest false
                 }
             }
             scm {
                 cloneWorkspace parentStep.getJobName(), 'Any'
             }
-            steps {
-                maven('compile')
-            }
         }
-
     }
-
 }

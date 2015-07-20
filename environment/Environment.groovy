@@ -3,6 +3,7 @@ package environment
 
 class Environment {
 
+    String namePrefix
     String serverUrl
     String serverCredentials
     //
@@ -16,6 +17,11 @@ class Environment {
 
         EnvironmentBuilder() {
             _instance = new Environment();
+        }
+
+        def namePrefix(String namePrefix) {
+            _instance.namePrefix = namePrefix
+            return this;
         }
 
         def serverUrl(String serverUrl) {

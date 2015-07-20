@@ -1,8 +1,9 @@
 package steps
 
-import component.Component
 import javaposse.jobdsl.dsl.DslFactory
 import project.Project
+import environment.Environment
+import component.Component
 import tools.DslFactoryProvider
 
 abstract class PipelineStep {
@@ -14,16 +15,18 @@ abstract class PipelineStep {
     public LinkedList<PipelineStep> nextSteps = new LinkedList<>();
 
     protected Project project
+    protected Environment environment
     protected Component component
 
-    PipelineStep(Project project, Component component) {
+    PipelineStep(Project project, Environment environment, Component component) {
         dslFactory = DslFactoryProvider.getInstance();
-        this.component = component
         this.project = project
+        this.environment = environment
+        this.component = component
     }
 
-    static def newInstance(Project project, Component component) {
-
+    static def newInstance(Project project, Environment environment, Component component) {
+        println("newInstance is unimplemented in abstract class PipelineStep");
     };
 
     abstract def getJobName();

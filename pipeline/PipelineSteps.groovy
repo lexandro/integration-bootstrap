@@ -1,13 +1,16 @@
 package pipeline
 
-import component.Component
-import steps.PipelineStep
 import project.Project
+import component.Component
+import environment.Environment
+import steps.PipelineStep
 
 abstract class PipelineSteps {
 
     protected PipelineStep firstStep;
+    //
     protected Project project
+    protected Environment environment;
     protected Component component
 
     PipelineSteps() {
@@ -17,9 +20,10 @@ abstract class PipelineSteps {
         return firstStep
     }
 
-    def configure(Project project, Component component) {
-        this.component = component
+    def configure(Project project, Environment environment, Component component) {
         this.project = project
+        this.environment = environment
+        this.component = component
         createStepTree();
     }
 
