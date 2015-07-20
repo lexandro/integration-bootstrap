@@ -6,9 +6,9 @@ import project.Project
 
 class Pipeline {
 
-    Component component;
-    Environment environment;
     Project project;
+    Environment environment;
+    Component component;
     PipelineSteps pipelineSteps;
 
 
