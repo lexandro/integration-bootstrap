@@ -24,7 +24,7 @@ class SonarStep extends PipelineStep {
 
         dslFactory.job(jobName) {
             description 'Quality check'
-            deliveryPipelineConfiguration("Build", "quality check")
+            deliveryPipelineConfiguration("Quality", "quality check")
             scm {
                 cloneWorkspace parentStep.getJobName(), 'Any'
             }

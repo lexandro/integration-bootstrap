@@ -4,6 +4,7 @@ import component.Component
 import environment.Environment
 import project.Project
 import steps.*
+import tools.*
 
 class Pipeline {
 
@@ -19,6 +20,9 @@ class Pipeline {
     def generate() {
         pipelineSteps.configure(project, environment, component);
         processSteps(pipelineSteps.firstStep);
+        Views.deliveryPipelineView(project.name + ' delivery pipeline', sprintf('%s-%s-%s-01-clone', project.namePrefix, component.name, environment.namePrefix), pipelineSteps.firstStep.getJobName());
+
+
     }
 
     private def processSteps(PipelineStep step) {

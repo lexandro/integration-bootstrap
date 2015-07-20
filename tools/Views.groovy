@@ -7,19 +7,13 @@ import tools.DslFactoryProvider
 
 public class Views {
 
-    static public def createView(String viewName, String regexPatternPrefix, String viewDescription) {
-        DslFactoryProvider.getInstance().listView(viewName) {
-            description viewDescription
-            jobs {
-                regex(regexPatternPrefix + '(.*?)')
-            }
-            columns {
-                status()
-                name()
-                lastSuccess()
-                lastFailure()
-                lastDuration()
-                buildButton()
+    static public def deliveryPipelineView(String viewName, String regexPatternPrefix, String initialJobName) {
+        DslFactoryProvider.getInstance().deliveryPipelineView(viewName) {
+            showAggregatedPipeline true
+            enableManualTriggers true
+            pipelineInstances 5
+            pipelines {
+                component(regexPatternPrefix + ' delivery pipeline', initialJobName)
             }
         }
     }

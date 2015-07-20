@@ -42,12 +42,3 @@ Pipeline pipeline = Pipeline.builder()
 // TODO inject branch via ENV-var
 pipeline.generate();
 
-//deliveryPipelineView(jobNamePrefix + ' delivery pipeline') {
-//    showAggregatedPipeline true
-//    enableManualTriggers true
-//    pipelineInstances 5
-//    pipelines {
-//        component(jobNamePrefix + ' delivery pipeline', checkoutJobName)
-//    }
-//}
-//
