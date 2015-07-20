@@ -2,7 +2,6 @@ package component
 
 class Component {
 
-    static boolean _initialized = false;
     String name
     String namePrefix
     String serverUrl
@@ -11,44 +10,50 @@ class Component {
     String scmCredentials
 
     def static builder() {
-        return new Component();
+        return new ComponentBuilder();
     }
+    //
+    static class ComponentBuilder {
+
+        Component _instance;
+
+        ComponentBuilder() {
+            _instance = new Component();
+        }
+
+        def name(String name) {
+            _instance.name = name
+            return this;
+        }
+
+        def namePrefix(String namePrefix) {
+            _instance.namePrefix = namePrefix
+            return this;
+        }
 
 
-    def name(String name) {
-        this.name = name
-        return this;
+        def serverUrl(String serverUrl) {
+            _instance.serverUrl = serverUrl
+            return this;
+        }
+
+        def serverCredentials(String serverCredentials) {
+            _instance.serverCredentials = serverCredentials
+            return this;
+        }
+
+        def scmUrl(String scmUrl) {
+            _instance.scmUrl = scmUrl
+            return this;
+        }
+
+        def scmCredentials(String scmCredentials) {
+            _instance.scmCredentials = scmCredentials
+            return this;
+        }
+
+        def build() {
+            return _instance;
+        }
     }
-
-    def namePrefix(String namePrefix) {
-        this.namePrefix = namePrefix
-        return this;
-    }
-
-
-    def serverUrl(String serverUrl) {
-        this.serverUrl = serverUrl
-        return this;
-    }
-
-    def serverCredentials(String serverCredentials) {
-        this.serverCredentials = serverCredentials
-        return this;
-    }
-
-    def scmUrl(String scmUrl) {
-        this.scmUrl = scmUrl
-        return this;
-    }
-
-    def scmCredentials(String scmCredentials) {
-        this.scmCredentials = scmCredentials
-        return this;
-    }
-
-
-    def build() {
-
-    }
-
 }

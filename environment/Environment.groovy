@@ -3,26 +3,33 @@ package environment
 
 class Environment {
 
-    static boolean _initialized = false;
     String serverUrl
     String serverCredentials
-
+    //
     def static builder() {
-        return new Environment();
+        return new EnvironmentBuilder();
     }
+    //
+    static class EnvironmentBuilder {
 
-    def serverUrl(String serverUrl) {
-        this.serverUrl = serverUrl
-        return this;
-    }
+        Environment _instance;
 
-    def serverCredentials(String serverCredentials) {
-        this.serverCredentials = serverCredentials
-        return this;
-    }
+        EnvironmentBuilder() {
+            _instance = new Environment();
+        }
 
+        def serverUrl(String serverUrl) {
+            _instance.serverUrl = serverUrl
+            return this;
+        }
 
-    def build() {
+        def serverCredentials(String serverCredentials) {
+            _instance.serverCredentials = serverCredentials
+            return this;
+        }
 
+        def build() {
+            return _instance;
+        }
     }
 }
