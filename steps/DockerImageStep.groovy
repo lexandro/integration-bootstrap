@@ -31,24 +31,27 @@ class DockerImageStep extends PipelineStep {
                     downstream nextStep.getJobName(), 'SUCCESS'
                 }
             }
-            /*
-            configuring CloudBees docker plugin via configure block
-           */
-            configure { project ->
-                project / builders / 'com.cloudbees.dockerpublish.DockerBuilder' {
-                    dockerFileDirectory '.'
-                    repoName 'lexandro/' + component.name
-                    noCache false
-                    forcePull false
-                    dockerfilePath '.'
-                    skipBuild false
-                    skipDecorate true
-                    skipTagLatest false
-                }
+            steps {
+                dockerBuild('tcp://localhost:2375',
+                        'docker_credentials',
+                        'https://registry-1.docker.io/v2/',
+                        'registry_credentials',
+                        'lexandro/' + component.name,
+                        'testTag',
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        '.'
+                )
             }
             scm {
                 cloneWorkspace parentStep.getJobName(), 'Any'
             }
         }
+
     }
 }

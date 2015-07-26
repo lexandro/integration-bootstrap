@@ -18,27 +18,6 @@ job('testJob') {
         echo('some text', 123)
     }
 }
-
-job('dockerBuildJob') {
-    steps {
-        dockerBuild('tcp://docker.host.test',
-                'docker_host',
-                'http://regisry.url',
-                'registry_credentials',
-                'testRepo',
-                'testTag',
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                'docker_dir'
-        )
-    }
-}
-
 /***************************************************************************************************************
  * Project settings
  ***************************************************************************************************************/
