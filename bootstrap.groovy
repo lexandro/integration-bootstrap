@@ -21,20 +21,20 @@ job('testJob') {
 
 job('dockerBuildJob') {
     steps {
-        dockerBuild(serverUri: 'tcp://docker.host.test',
-                serverCredentialsId: 'docker_host',
-                registryUrl: 'http://regisry.url',
-                registryCredentialsId: 'registry_credentials',
-                repoName: 'testRepo',
-                repoTag: 'testTag',
-                skipPush: true,
-                noCache: true,
-                forcePull: true,
-                skipBuild: true,
-                createFingerPrint: true,
-                skipDecorate: true,
-                skipTagLatest: true,
-                dockerFilePath: 'docker_dir'
+        dockerBuild('tcp://docker.host.test',
+                'docker_host',
+                'http://regisry.url',
+                'registry_credentials',
+                'testRepo',
+                'testTag',
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                'docker_dir'
         )
     }
 }
